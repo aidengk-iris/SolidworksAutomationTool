@@ -88,7 +88,7 @@ namespace SolidworksAutomationTool
     }
 
     /* A simple class to hold a 3D point */
-    public class Point3D
+    public class Point3D : IEquatable<Point3D>
     {
         public float x = 0.0f;
         public float y = 0.0f;
@@ -112,6 +112,26 @@ namespace SolidworksAutomationTool
             this.x = values[0];
             this.y = values[1];
             this.z = values[2];
+        }
+
+        // Function to help inter-point comparison
+        public bool Equals(Point3D otherPoint)
+        {
+            if(otherPoint == null)
+            {
+                return false;
+            }
+            // if comparing the same object, then they are surely equal
+            if(Object.ReferenceEquals(this, otherPoint))
+            {
+                return true;
+            }
+            // only makes sense to compare apples with apples
+            if(this.GetType() != otherPoint.GetType())
+            {
+                return false;
+            }
+            return this.x == otherPoint.x && this.y == otherPoint.y && this.z == otherPoint.z;
         }
     }
 }
