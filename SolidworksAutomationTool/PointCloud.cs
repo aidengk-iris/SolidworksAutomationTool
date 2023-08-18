@@ -15,14 +15,21 @@ namespace SolidworksAutomationTool
         // Simple points-printing function. Could be used for debugging
         public void PrintPoint3Ds()
         {
+            // this number controls the field width (the fixed space taken in the console) for each number.
+            const int FieldWidthRightAligned = 15;
             int pointIndex = -1;
             foreach (Point3D point in point3Ds)
             {
                 pointIndex += 1;
-                Console.WriteLine($"Point {pointIndex}: x: {point.x}, y: {point.y}, z: {point.z}");
+                Console.WriteLine($"Point {pointIndex, 5}:      x: {point.x,FieldWidthRightAligned:F3}, y: {point.y,FieldWidthRightAligned:F3}, z: {point.z,FieldWidthRightAligned:F3}");
             }
         }
 
+        /* 
+         * Reads a txt file and parse all points into a list of 3D points
+         * Returns: true if the parse was sucessful
+         *          false otherwise
+         */
         public bool ReadPointCloudFromTxt(string fileName)
         {
             // security check
