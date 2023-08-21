@@ -1,6 +1,12 @@
 ﻿
 namespace SolidworksAutomationTool
 {
+    // this enum defines the allowed units in the txt file to be parsed in
+    public enum Units: ushort
+    {
+        Millimeter = 0,
+        Meter = 1,
+    }
     /* Point Cloud class that supports reading generated a point cloud from a txt file */
     public class PointCloud
     {
@@ -30,12 +36,18 @@ namespace SolidworksAutomationTool
          * Returns: true if the parse was sucessful
          *          false otherwise
          */
-        public bool ReadPointCloudFromTxt(string fileName)
+        public bool ReadPointCloudFromTxt(string fileName, Units dataUnit)
         {
             // security check
             if ( !File.Exists(fileName) )
             {
                 Console.WriteLine("ERROR: Cannot read point cloud from txt. Txt file doesn't exist");
+                return false;
+            }
+
+            if ( !Enum.IsDefined( typeof( Units ), dataUnit ) )
+            {
+                Console.WriteLine("ERROR: the unit entered in <function>ReadPointCloudFromTxt is not valid");
                 return false;
             }
 
@@ -74,6 +86,15 @@ namespace SolidworksAutomationTool
                             Console.WriteLine($"ERROR: Wrong data format in line {currentLine}. Please check for typos");
                             return false;
                         }
+
+                        // Since solidworks's api seems to only take data in meters. We need to convert everything to meters, when the point cloud txt file contains data in mm
+                        convertedNumbers[axis] = dataUnit switch
+                        {
+                            Units.Millimeter => convertedNumbers[axis] / 1000.0f,
+                            Units.Meter => convertedNumbers[axis],
+                            // Currently only support meters and milimeters. Other units might be added later
+                            _ => -1,
+                        };
                     }
                     // add the create point to the Point3D list
                     point3Ds.Add( new Point3D(convertedNumbers) );

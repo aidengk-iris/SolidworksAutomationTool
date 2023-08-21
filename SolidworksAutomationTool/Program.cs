@@ -18,7 +18,7 @@ string frontGridPointCloudFilePath = Console.ReadLine();
 
 Console.WriteLine("Reading front grid point cloud file ...");
 PointCloud frontGridPointCloud = new();
-frontGridPointCloud.ReadPointCloudFromTxt(frontGridPointCloudFilePath);
+frontGridPointCloud.ReadPointCloudFromTxt(frontGridPointCloudFilePath, Units.Millimeter);
 Console.WriteLine("Completed reading point cloud file");
 
 // DEBUG use: check if the points are read in correctly
@@ -30,7 +30,7 @@ string backGridPointCloudFilePath = Console.ReadLine();
 
 Console.WriteLine("Reading back grid point cloud file ...");
 PointCloud backGridPointCloud = new();
-backGridPointCloud.ReadPointCloudFromTxt(backGridPointCloudFilePath);
+backGridPointCloud.ReadPointCloudFromTxt(backGridPointCloudFilePath, Units.Millimeter);
 Console.WriteLine("Completed reading point cloud file");
 
 // DEBUG use: check if the points are read in correctly
@@ -77,10 +77,9 @@ PromptAndWait("Press any key to create point clouds and axes of extrusions");
 // Try iterating through two point clouds at the same time
 foreach ( (Point3D frontPoint, Point3D backPoint) in frontGridPointCloud.point3Ds.Zip(backGridPointCloud.point3Ds))
 {
-    // TODO: probably should just store the points in meters instead of milimeters to avoid conversions
-    modulePart.SketchManager.CreatePoint(frontPoint.x / 1000.0, frontPoint.y / 1000.0, frontPoint.z / 1000.0);
-    modulePart.SketchManager.CreatePoint(backPoint.x / 1000.0, backPoint.y / 1000.0, backPoint.z / 1000.0);
-    modulePart.SketchManager.CreateLine(frontPoint.x / 1000.0, frontPoint.y / 1000.0, frontPoint.z / 1000.0, backPoint.x / 1000.0, backPoint.y / 1000.0, backPoint.z / 1000.0);
+    modulePart.SketchManager.CreatePoint(frontPoint.x, frontPoint.y , frontPoint.z );
+    modulePart.SketchManager.CreatePoint(backPoint.x , backPoint.y  , backPoint.z );
+    modulePart.SketchManager.CreateLine(frontPoint.x , frontPoint.y , frontPoint.z, backPoint.x, backPoint.y, backPoint.z);
 }
 
 // TODO: find best way to select point pairs
